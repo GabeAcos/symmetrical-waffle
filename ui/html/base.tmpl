@@ -1,0 +1,30 @@
+{{define "base"}}
+<!doctype html>
+<html lang="en" class="h-100" data-bs-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{template "title" .}} - TeamFit</title>
+        <link href="/static/css/bootstrap.css" rel="stylesheet">
+    </head>
+    <body class="d-flex h-100 text-center text-bg-dark">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+            <header class="mb-auto"> 
+                <div class="clearfix"> 
+                    <h3 class="float-md-start mb-0">
+                        Home Page
+                    </h3> 
+                    {{template "nav" .}}
+                </div> 
+            </header> 
+            <main>
+                {{template "main" .}}
+            </main>
+            <footer class="mt-auto text-white-50">
+                Powered by <a href="https://golang.org/" class="text-white">Go</a>
+            </footer>
+        </div>
+        <script src="/static/js/bootstrap.bundle.js"></script>
+    </body>
+</html>
+{{end}}
