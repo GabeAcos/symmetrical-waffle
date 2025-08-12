@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -13,9 +12,6 @@ type application struct {
 }
 
 func main() {
-	mux := http.NewServeMux()
-	fileserver := http.FileServer(http.Dir("./ui/static/"))
-
 	addr := flag.String("addr", ":4000", "HTTP routing address")
 	flag.Parse()
 
@@ -24,15 +20,10 @@ func main() {
 	app := application{
 		logger: logger,
 	}
-	mux.Handle("GET /static/", http.StripPrefix("/static", fileserver))
-
-	mux.HandleFunc("GET /{$}", app.home)
-	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
-	mux.HandleFunc("GET /snippet/create", app.snippetCreate)
-	mux.HandleFunc("POST /snippet/create", app.snippetCreatePost)
 
 	app.logger.Info("Starting Server", "port", *addr)
 
-	err := http.ListenAndServe(*addr, mux)
-	log.Fatal(err)
+	err := http.ListenAndServe(*addr, app.routes())
+	logger.Error(err.Error())
+	os.Exit(1)
 }
