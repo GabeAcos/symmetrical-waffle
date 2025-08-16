@@ -2,6 +2,7 @@
 
  import (
 	"database/sql"
+	"errors"
  )
 
  type User struct {
@@ -36,7 +37,23 @@
  }
 
  func (m *UserModel) Get(id int) (User, error) {
-	return User{}, nil
+	stmt := `SELECT id, name, age, height, weight FROM users
+	WHERE id = ?`
+	
+	row := m.DB.QueryRow(stmt, id)
+
+	var u User
+
+	err := row.Scan(&u.ID, &u.Name, &u.Age, &u.Height, &u.Weight)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return User{}, ErrNoRecord
+		} else {
+			return User{}, err
+		}
+	}
+
+	return u, nil
  }
 
  func (m *UserModel) Latest() ([]User, error) {

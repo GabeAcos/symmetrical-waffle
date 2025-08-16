@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
+	"snippetboxsolo/internal/models"
 	"strconv"
 )
 
@@ -39,7 +41,17 @@ func (app *application) userView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "User with id of : %v", id)
+	user, err := app.users.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.NotFound(w, r)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+	fmt.Fprintf(w, "%+v", user)
+
 }
 
 func (app *application) userCreate(w http.ResponseWriter, r *http.Request) {
@@ -47,5 +59,16 @@ func (app *application) userCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) userCreatePost(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("User Create Post"))
+	name := "sophia"
+	age := 2
+	height := 24
+	weight := 30
+
+	id, err := app.users.Insert(name, age, height, weight)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/user/view/%d", id), http.StatusSeeOther)
 }
