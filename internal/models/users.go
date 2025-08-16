@@ -57,5 +57,33 @@
  }
 
  func (m *UserModel) Latest() ([]User, error) {
-	return nil, nil
+	stmt := `SELECT id, name, age, height, weight
+	FROM users 
+	ORDER BY id DESC LIMIT 10`
+
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var users []User
+
+	for rows.Next() {
+		var u User
+
+		err = rows.Scan(&u.ID, &u.Name, &u.Age, &u.Height, &u.Weight)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, u)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
  }
