@@ -31,7 +31,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
+func (app *application) userView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 
 	if err != nil || id < 1 {
@@ -39,13 +39,13 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Snippet with id of : %v", id)
+	fmt.Fprintf(w, "User with id of : %v", id)
 }
 
-func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Snippet Create"))
+func (app *application) userCreate(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("User Create"))
 }
 
-func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Snippet Create Post"))
+func (app *application) userCreatePost(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("User Create Post"))
 }
