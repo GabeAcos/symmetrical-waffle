@@ -81,3 +81,32 @@ func (app *application) userCreatePost(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, fmt.Sprintf("/user/view/%d", id), http.StatusSeeOther)
 }
+
+func (app *application) exerciseView(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+
+	if err != nil || id < 1 {
+		http.NotFound(w,r)
+		return
+	}
+
+	excercise, err := app.exercises.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord){
+			http.NotFound(w, r)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+	
+	fmt.Fprintf(w, "%+v", excercise)
+}
+
+func (app *application) exerciseCreate(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Excersise Create"))
+}
+
+func (app *application) exerciseCreatePost(w http.ResponseWriter, r *http.Request) {
+
+}
