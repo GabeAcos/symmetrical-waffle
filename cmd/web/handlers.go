@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+
 	// "html/template"
 	"net/http"
 	"snippetboxsolo/internal/models"
@@ -86,20 +87,20 @@ func (app *application) exerciseView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 
 	if err != nil || id < 1 {
-		http.NotFound(w,r)
+		http.NotFound(w, r)
 		return
 	}
 
 	excercise, err := app.exercises.Get(id)
 	if err != nil {
-		if errors.Is(err, models.ErrNoRecord){
+		if errors.Is(err, models.ErrNoRecord) {
 			http.NotFound(w, r)
 		} else {
 			app.serverError(w, r, err)
 		}
 		return
 	}
-	
+
 	fmt.Fprintf(w, "%+v", excercise)
 }
 
@@ -108,5 +109,16 @@ func (app *application) exerciseCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) exerciseCreatePost(w http.ResponseWriter, r *http.Request) {
+	name := "pullups"
+	sets := 4
+	reps := 10
+	weight := 0
 
+	id, err := app.exercises.Insert(name, sets, reps, weight)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/excersise/view/%d", id), http.StatusSeeOther)
 }
